@@ -1,0 +1,25 @@
+{
+  "name": "new-carpool",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "braces": "^3.0.3",
+    "chokidar": "^4.0.1",
+    "micromatch": "^4.0.8",
+    "web3": "^4.15.0",
+    "web3.js-browser": "^0.2.0",
+    "webpack": "^5.96.1"
+  },
+  "resolutions": {
+    "braces": "3.0.3",
+    "micromatch": "4.0.8",
+    "chokidar": "4.0.1"
+  }
+}

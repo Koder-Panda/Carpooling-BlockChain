@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        body {
+            background-color: lightblue;
+            /* Change this color as needed */
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Ride Status</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="node_modules/web3/dist/web3.min.js"></script>
+    <script src="web3connection.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <script>
+        let rideno;
+
+        $(document).ready(function () {
+            // Get the ride number from the query parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            rideno = urlParams.get('rideno');
+
+            if (!rideno) {
+                alert("No ride number provided!");
+                return;
+            }
+
+            // Display the ride number
+            $("#rideno").text(rideno);
+
+            // Fetch ride details
+            myContract.methods.searchView(rideno).call()
+                .then(function (rideDetails) {
+                    // Display ride details
+                    $("#from").text(rideDetails[1]);
+                    $("#to").text(rideDetails[2]);
+                    $("#date").text(rideDetails[3]);
+                    $("#time").text(rideDetails[4]);
+                    $("#status").text(rideDetails[10] ? "Active" : "Inactive");
+                })
+                .catch(function (error) {
+                    console.error("Error fetching ride details:", error);
+                    alert("Failed to fetch ride details.");
+                });
+        });
+
+        // Update the ride status
+        function updateRideStatus(action) {
+            myContract.methods.rideBookingStatusUpdate(rideno, action)
+                .send({ from: userAccount }) // Replace userAccount with the current user's address
+                .then(function (receipt) {
+                    console.log("Ride status updated:", receipt);
+                    alert("Ride status updated successfully!");
+                    // Optionally, redirect back to a dashboard or another page
+                    window.location.href = "dashboard.html";
+                })
+                .catch(function (error) {
+                    console.error("Error updating ride status:", error);
+                    alert("Failed to update ride status.");
+                });
+        }
+    </script>
+</head>
+
+<body>
+    <h1>Update Ride Status</h1>
+    <hr />
+    <div>
+        <strong>Ride Number:</strong> <span id="rideno"></span>
+    </div>
+    <div>
+        <strong>From:</strong> <span id="from"></span>
+    </div>
+    <div>
+        <strong>To:</strong> <span id="to"></span>
+    </div>
+    <div>
+        <strong>Date:</strong> <span id="date"></span>
+    </div>
+    <div>
+        <strong>Time:</strong> <span id="time"></span>
+    </div>
+    <div>
+        <strong>Status:</strong> <span id="status"></span>
+    </div>
+    <hr />
+    <!-- Pass correct uint256 directly from buttons -->
+    <button onclick="updateRideStatus(1)">Activate Ride</button>
+    <button onclick="updateRideStatus(0)">Cancel Ride</button>
+    <a href="dashboard.html" class="btn">Back to Dashboard</a>
+</body>
+
+</html>
